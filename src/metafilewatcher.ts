@@ -8,7 +8,7 @@ import * as fs from 'fs';
 let watcher: vscode.FileSystemWatcher;
 let justCreated: vscode.Uri | void;
 export async function activate(context: vscode.ExtensionContext) {
-    console.log("Activate Unity Meta files watcher!")
+    console.log("Activate Unity meta files watcher!")
 
     watcher = vscode.workspace.createFileSystemWatcher("**/*.*");
 
