@@ -18,6 +18,11 @@ export async function activate(context: vscode.ExtensionContext) {
             return
         }
 
+        //Ignore file operations done outside of vscode
+        if (!vscode.window.state.focused) {
+            return
+        }
+
         //console.log("OnCreate " + uri)
         setTimeout(() => justCreated = undefined, 200);
         justCreated = uri
@@ -26,6 +31,11 @@ export async function activate(context: vscode.ExtensionContext) {
     watcher.onDidDelete(uri => {
         //Ignore meta file
         if (uri.fsPath.endsWith(".meta")) {
+            return
+        }
+
+        //Ignore file operations done outside of vscode
+        if (!vscode.window.state.focused) {
             return
         }
 
