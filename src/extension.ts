@@ -10,12 +10,12 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.workspace.findFiles("**/*.meta", null, 1).then(ps => {
         if (ps.length > 0) {
             //Is Unity Project
-            metafilewatcher.activate(context)
+            metafilewatcher.activate(context);
         }
     })
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {
-    metafilewatcher.deactivate()
+    metafilewatcher.deactivate();
 }

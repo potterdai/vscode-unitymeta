@@ -8,67 +8,74 @@ import * as fs from 'fs';
 let watcher: vscode.FileSystemWatcher;
 let justCreated: vscode.Uri | void;
 export async function activate(context: vscode.ExtensionContext) {
-    console.log("Activate Unity meta files watcher!")
+    console.log("Activate Unity Meta files watcher!");
 
-    watcher = vscode.workspace.createFileSystemWatcher("**/*.*");
+    watcher = vscode.workspace.createFileSystemWatcher("**/*");
 
     watcher.onDidCreate(uri => {
         //Ignore meta file
         if (uri.fsPath.endsWith(".meta")) {
-            return
+            return;
         }
 
         //Ignore file operations done outside of vscode
         if (!vscode.window.state.focused) {
-            return
+            return;
         }
 
-        //console.log("OnCreate " + uri)
+        if (justCreated !== undefined) {
+            if (uri.fsPath.indexOf(justCreated.fsPath) >= 0) {
+                //Change folder name
+                return;
+            }
+        }
+
+        //console.log("OnCreate " + uri);
         setTimeout(() => justCreated = undefined, 200);
-        justCreated = uri
+        justCreated = uri;
     });
 
     watcher.onDidDelete(uri => {
         //Ignore meta file
         if (uri.fsPath.endsWith(".meta")) {
-            return
+            return;
         }
 
         //Ignore file operations done outside of vscode
         if (!vscode.window.state.focused) {
-            return
+            return;
         }
 
-        //console.log("OnDelete " + uri)
-        if (justCreated != undefined) {
+        //console.log("OnDelete " + uri);
+        if (justCreated !== undefined) {
             var justCreatedFsPath = justCreated.fsPath;
             var justDeletedFsPath = uri.fsPath;
             var justCreatedPath = path.parse(justCreatedFsPath);
             var justDeletedPath = path.parse(justDeletedFsPath);
-
-            if (justCreatedPath.dir == justDeletedPath.dir) {
+            
+            if (justCreatedPath.dir === justDeletedPath.dir) {
                 //change file name
-                //console.log("FileName changed from " + justDeletedPath.base + " " + justCreatedPath.base)
+                //console.log("FileName changed from " + justDeletedPath.base + " " + justCreatedPath.base);
                 fs.exists(justDeletedFsPath + ".meta", (exist: boolean) => {
                     if (exist) {
-                        fs.rename(justDeletedFsPath + ".meta", justCreatedFsPath + ".meta", () => { })
+                        fs.rename(justDeletedFsPath + ".meta", justCreatedFsPath + ".meta", () => { });
                     }
                 });
-            } else if (justCreatedPath.base == justDeletedPath.base) {
+            } else if (justCreatedPath.base === justDeletedPath.base) {
                 //change file location
-                //console.log("File moved from " + justDeletedPath.dir + " " + justCreatedPath.dir)
+                //console.log("File moved from " + justDeletedPath.dir + " " + justCreatedPath.dir);
                 fs.exists(justDeletedFsPath + ".meta", (exist: boolean) => {
                     if (exist) {
-                        fs.rename(justDeletedFsPath + ".meta", justCreatedFsPath + ".meta", () => { })
+                        fs.rename(justDeletedFsPath + ".meta", justCreatedFsPath + ".meta", () => { });
                     }
                 });
             }
         } else {
             //Just normal delete
-            //console.log("File delete from " + justDeletedPath.dir)
+            //console.log("File delete from " + uri.fsPath);
             fs.exists(uri.fsPath + ".meta", (exist: boolean) => {
                 if (exist) {
-                    fs.unlink(uri.fsPath + ".meta", () => { })
+                    fs.unlink(uri.fsPath + ".meta", () => { });
                 }
             });
         }
@@ -80,7 +87,7 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 export async function deactivate() {
-    if (watcher != undefined) {
-        watcher.dispose()
+    if (watcher !== undefined) {
+        watcher.dispose();
     }
 }
