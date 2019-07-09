@@ -1,8 +1,8 @@
 {
     "name": "vscode-unitymeta",
-    "displayName": "vscode-unitymeta",
+    "displayName": "Unity3D Meta Files Watcher",
     "description": "Unity3D meta files watcher.",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "publisher": "PTD",
     "repository": {
         "type": "GitHub",
